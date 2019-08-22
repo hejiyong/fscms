@@ -1,4 +1,4 @@
-## SugarCRM
+## FreeSqlCRM
 # Ignore custom .htaccess stuff.
 /.htaccess
 # Ignore the cache directory completely.
@@ -6,8 +6,6 @@
 # the misuse of the repository as backup replacement.
 # For development the cache directory can be safely ignored and
 # therefore it is ignored.
-/cache/*
-!/cache/index.html
 # Ignore some files and directories from the custom directory.
 /custom/history/
 /custom/modulebuilder/

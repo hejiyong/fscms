@@ -1,0 +1,28 @@
+﻿@using FsCms.Entity;
+@model FsCms.Entity.SysUpdateLog
+@{ Layout = ""; }
+
+<form class="layui-form" action="" id="frm_SysUpdateLogEdit">
+    <div class="form-module-content">
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章分类 </label>
+            <div class="layui-input-block">
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.Status)
+                @Html.HiddenFor(m => m.CreateBy)
+                @Html.HiddenFor(m => m.CreateDt)
+                @Html.TextBoxFor(m => m.VersionNum, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">摘要</label>
+            <div class="layui-input-block">
+                @Html.TextAreaFor(m => m.Remark, new Dictionary<string, object> { { "class", "layui-textarea" }, { "maxlength", 500 }, { "data-msg-maxlength", "最大长度为:500" } })<string, object><string, object><string, object><string, object><string, object><string, object>
+            </div>
+        </div>
+    </div>
+    @*<div class="form-module-footer">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>*@
+</form>

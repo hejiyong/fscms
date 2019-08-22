@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model FsCms.Entity.SiteInfo
+<div style=" padding:0px 5px 0px 5px; " id="index_SiteInfoDataList">
+    <form class="layui-form" action="" lay-filter="SiteInfoEdit">
+        <div class="layui-form-item">
+            <label class="layui-form-label">站点名称</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.SiteName, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入站点名称" } })
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题语</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.Headline, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题语" } })
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">简介</label>
+            <div class="layui-input-block">
+                @Html.TextAreaFor(m => m.Abstract, new Dictionary<string, object> { { "class", "layui-textarea" }, { "maxlength", 500 }, { "data-msg-maxlength", "最大长度为:500" }, { "placeholder", "请输入简介" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" type="button" lay-submit lay-filter="siteInfoSubmit">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    var index_SiteInfoDataList = $("#index_SiteInfoDataList")
+    var bodyheight = 0;
+    var treeid = "";
+    $(function () {
+        bodyheight = $(window).height();
+    });
+
+    layui.use(['form','jquery'], function () {
+        var form = layui.form
+        var $ = layui.$;
+        bodyheight = $(window).height();
+
+        //监听提交
+        form.on('submit(siteInfoSubmit)', function (data) {
+            event.preventDefault();
+            data.field.Id = data.field.Id || 0;
+            var saveLoading = 0;
+            var url = "/Admin/SiteInfo/Create";
+            if (data.field.Id > 0) {
+                url = "/Admin/SiteInfo/Update";
+            }
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: JSON.stringify(data.field),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                beforeSend: function () {
+                    saveLoading = freejs.showLoading({ msg: "数据提交中...", shade: 0.2 });
+                },
+                success: function (e) {
+                    if (e.Status == 1) {
+                        freejs.showMessage({ title: "提示", msg: e.Msg || "保存成功", type: 1 });
+                        layer.close(index);
+                    }
+                    else {
+                        freejs.showMessage({ title: "提示", msg: e.Msg, type: 2 });
+                    }
+                    freejs.closeLoading(saveLoading);
+                }
+            });
+            return false;
+        });
+
+        @*//表单初始赋值
+        form.val('SiteInfoEdit', {
+            "SiteName": "@Model?.SiteName", // "name": "value"
+            "Headline": "@Model?.Headline",
+            "Abstract": "@Model?.Abstract",
+            "Id": @(Model?.Id ?? 0),
+            "Status": "@(Model?.Status??0)"
+        });*@
+
+    });
+</script>

@@ -1,0 +1,62 @@
+﻿@using FsCms.Entity;
+@model FsCms.Entity.TemplateExample
+@{ Layout = ""; }
+
+<form class="layui-form" action="" id="frm_TemplateExampleAdd">
+    <div class="form-module-content">
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据类型 </label>
+            <div class="layui-input-block">
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.CreateBy)
+                @Html.HiddenFor(m => m.CreateDt)
+                @Html.HiddenFor(m => m.TemplatePath)
+                @{ ViewBag.DataTypeList = FsCms.Service.Helper.EnumHelper.ToSelectList(typeof(FsCms.Entity.Enum.ExampleOrTemplate));}
+                @Html.DropDownList("DataType", ViewBag.DataTypeList as List<SelectListItem>, "", new Dictionary<string, object> { { "class", "plate_text" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">模板名称</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.TempateName, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">模板地址</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.TemplatePath, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模板图片</label>
+            <div class="layui-input-block">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn" id="template_upload">上传图片</button>
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="template_showimg" style="width:60%;height:auto;">
+                        <p id="template_text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="1" title="启用" checked="">
+                <input type="radio" name="status" value="0" title="关闭">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述 </label>
+            <div class="layui-input-block">
+                @Html.TextAreaFor(m => m.Describe, new Dictionary<string, object> { { "class", "layui-textarea" }, { "maxlength", 500 }, { "data-msg-maxlength", "最大长度为:500" } })<string, object><string, object><string, object><string, object><string, object><string, object>
+            </div>
+        </div>
+    </div>
+    @*<div class="form-module-footer">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>*@
+</form>

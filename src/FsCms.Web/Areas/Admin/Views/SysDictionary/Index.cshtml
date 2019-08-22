@@ -1,0 +1,150 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model FsCms.Entity.SysDictionary
+<div style="background:none; padding:2px 5px 0px 5px; " id="index_SysDictionaryDataList">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md2">
+            <div class="grid-demo grid-demo-bg1">
+
+                <div class="layui-card">
+                    <div class="layui-card-header">文章分类</div>
+                    <div class="layui-card-body">
+                        <ul id="SysDictionaryLeftTree"></ul>
+                    </div>
+                </div>
+                @*<blockquote class="layui-elem-quote layui-quote-nm">
+                        <ul id="articleTypeLeftTree"></ul>
+                    </blockquote>*@
+            </div>
+        </div>
+        <div class="layui-col-md10">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px 8px;">
+                    <div class="dataGrid_Toolbar">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item fs-mb-0">
+                                <div class="layui-inline" style="float: left;">
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        @Html.ListToolBarButtons(User,new List<ToolBarActionButton>() {
+                                             new ToolBarActionButton() { Name = "add", ClassName = "add", Text = "新增", Attributes = new Dictionary<string, object>{ { "data-type", "add" } } }
+                                             ,new ToolBarActionButton() { Name = "update", ClassName = "update", Text = "修改", Attributes = new Dictionary<string, object>{ { "data-type", "update" } } }
+                                             ,new ToolBarActionButton() { Name = "delete", ClassName = "delete", Text = "删除", Attributes = new Dictionary<string, object>{ { "data-type", "delete" } } }
+                                        })
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline" style="float: right;">
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <input class="layui-input fs-search-txt" name="id" id="search_txt" placeholder="标题/内容" autocomplete="off">
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <button class="layui-btn layui-btn-sm" type="button" data-type="reload"><i class="layui-icon">&#xe615;</i>搜索</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <table class="layui-hide" id="SysDictionaryDataList" style="background:#fff;" lay-filter="SysDictionaryDataList"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/html" id="SysDictionary_Bar">
+        @Html.ListViewButtons(User, new List<ToolBarActionButton>() {
+            new ToolBarActionButton() { Name = "edit", ClassName = "edit", Text = "编辑", Attributes = new Dictionary<string, object>{ { "lay-event", "edit" } } }
+            ,new ToolBarActionButton() { Name = "del", ClassName = "del", Text = "删除", Attributes = new Dictionary<string, object>{ { "lay-event", "del" } } }
+        })
+    </script>
+
+    <script type="text/html" id="SysDictionaryEdit">
+    </script>
+</div>
+
+<script>
+    var index_SysDictionaryDataList = $("#index_SysDictionaryDataList")
+    var bodyheight = 0;
+    var treeid = "";
+    $(function () {
+        bodyheight = $(window).height();// document.body.scrollHeight;
+    });
+
+    layui.use(['form', 'table', 'jquery', 'tree'], function () {
+        var table = layui.table;
+        var form = layui.form
+        var $ = layui.$;
+        bodyheight = $(window).height();
+
+
+        var loadTreeData = function () {
+            $.ajax({
+                url: '/Admin/SysDictionary/GetTree',
+                data: {},
+                type: "GET",
+                dataType: 'json',
+                success: function (data) {
+                    $("#SysDictionaryLeftTree").html("");
+                    layui.tree({
+                        elem: '#SysDictionaryLeftTree', //传入元素选择器
+                        nodes: data,
+                        skin: 'shihuang',
+                        click: function (node) {
+                            treeid = node.id;
+                            gridview.reload();
+                            console.log(node) //node即为当前点击的节点数据
+                        }
+                    });
+                }
+            });
+        };
+
+        var gridview = freejs.dataGrid(table, form, {
+            //freejs封装参数
+            controller: "/Admin/SysDictionary",
+            addParamterExt: function () {
+                return { id: "", parentid: treeid };
+            },
+            pageElem: index_SysDictionaryDataList,
+            elem: '#SysDictionaryDataList',
+            formElem: "SysDictionaryEdit",
+            formArea: ['500px', '400px'],
+            tableOptions: {
+                //table固定参数
+                where: function () {
+                    var seniorQueryJson = {};
+                    if (treeid !="") {
+                        seniorQueryJson.ParentID = treeid;
+                    }
+                    seniorQueryJson = JSON.stringify(seniorQueryJson);
+                    var query = { searchContent: $("input[type=search_txt]", index_SysDictionaryDataList).val(), seniorQueryJson: seniorQueryJson };
+                    return query;
+                },
+                cols: [[
+                    { checkbox: true, fixed: true }
+                    , { field: '@nameof(Model.Id)', title: 'Id', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: '@nameof(Model.DictNo)', title: '菜单名称', edit: 'text' }
+                    , { field: '@nameof(Model.DictName)', title: '菜单地址', width: 80, edit: 'text', sort: true }
+                    , { field: '@nameof(Model.Sort)', title: '序号', width: 100 }
+                    , { field: '@nameof(Model.Description)', title: '描述', width: 100 }
+                    , { field: '@nameof(Model.Status)', title: '状态', width: 160, sort: true }
+                    , { field: '@nameof(Model.CreateDt)', title: '创建时间', width: 160 }
+                    , { fixed: 'right', title: '操作', toolbar: '#SysDictionary_Bar', width: 150 }
+                ]],
+                page: true,
+                height: bodyheight - 212,
+            },
+            editBefore: function () {
+
+            },
+            submitBefore: function (data) {
+                return data;
+            },
+            submitAfter: function () {
+                loadTreeData();
+            }
+        });
+        loadTreeData();
+    });
+</script>

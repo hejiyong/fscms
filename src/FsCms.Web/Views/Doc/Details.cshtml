@@ -1,0 +1,81 @@
+﻿@{
+    Layout = null;
+    var documentinfo = (ArticleContent)ViewBag.DocumentInfo;
+}
+
+@if (ViewBag.DocumentInfo == null)
+{
+    <span>文章不存在，请选择其它文章查看！</span>
+}
+else
+{
+    { documentinfo.DocContent = "\n" + documentinfo.DocContent; }
+    <h1 class="site-h1">@documentinfo.Title</h1>
+    <div id="details_content" class="md_css" style="display:none;">
+        @documentinfo.DocContent
+    </div>
+    <script>
+        if ('@documentinfo.OriginType' == '1') {
+            @*var options = {
+                elm: "details_content", url: "@documentinfo.OriginUrl", paramters: "", loadIndex: 1,
+                successCallBack: function () {
+                    debugger
+                    document.getElementById('details_content').innerHTML =
+                        marked($("#details_content").html());
+                }
+            };*@
+
+            var xhr = new XMLHttpRequest();
+            xhr.timeout = 3000;
+            xhr.ontimeout = function (event) {
+                alert("请求超时！");
+            }
+            debugger
+            var formData = new FormData();
+            var originurl = '@documentinfo.OriginUrl';
+            originurl = decodeURI(originurl);
+            var m = "";
+            if (originurl.indexOf("#")!=-1) {
+                var titles = originurl.split('#');
+                m = "#" + titles[1];
+                xhr.open('GET', "/file"+ titles[0]+ ".md#"+ titles[1]);
+            }
+            else xhr.open('GET', "/file" + originurl+".md");
+
+            xhr.send(formData);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById('details_content').innerHTML =
+                        marked(xhr.responseText);
+                    window.location.hash = m;
+                    //可以将xhr.responseText的https://github.com/2881099/FreeSql/wiki/替换为/file/FreeSql.wiki/
+                }
+            }
+        }
+        else {
+            if ('@documentinfo.EditorMode' == '0') {
+                marked.setOptions({
+                    renderer: new marked.Renderer(),
+                    gfm: true,
+                    tables: true,
+                    breaks: true,
+                    pedantic: false,
+                    sanitize: false,
+                    smartLists: true,
+                    smartypants: false,
+                });
+                marked.setOptions({
+                    highlight: function (code) {
+                        return hljs.highlightAuto(code).value;
+                    }
+                });
+                document.getElementById('details_content').innerHTML =
+                    marked($("#details_content").html());
+            }
+            else {
+                //直接里面的内容就是HTML，不需要转换md
+            }
+        }
+        $("#details_content").show();
+    </script>
+}

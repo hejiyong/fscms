@@ -1,0 +1,110 @@
+﻿
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model FsCms.Entity.TemplateExample
+<div style="background:#fff; padding:10px 5px 0px 5px; " id="index_TemplateExampleDataList">
+    <div class="dataGrid_Toolbar">
+        <form class="layui-form" action="">
+            <div class="layui-form-item fs-mb-0">
+                <div class="layui-inline" style="float: left;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        <button class="layui-btn layui-btn-normal layui-btn-sm" type="button" data-type="add"><i class="layui-icon">&#xe61f;</i>新增</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-sm" type="button" data-type="update"><i class="layui-icon">&#xe642;</i>修改</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-sm" type="button" data-type="delete"><i class="layui-icon">&#xe640;</i>删除</button>
+                    </div>
+                </div>
+
+                <div class="layui-inline" style="float: right;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        <input class="layui-input fs-search-txt" name="id" id="search_txt" placeholder="标题/内容" autocomplete="off">
+                    </div>
+                    <div class="layui-input-inline" style="width: auto;">
+                        <button class="layui-btn layui-btn-sm" type="button" data-type="reload"><i class="layui-icon">&#xe615;</i>搜索</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="layui-hide" id="TemplateExampleDataList" lay-filter="TemplateExampleDataList"></table>
+    <script type="text/html" id="TemplateExample_bar">
+        @Html.ListViewButtons(User, new List<ToolBarActionButton>() {
+                new ToolBarActionButton() { Name = "edit", ClassName = "edit", Text = "编辑", Attributes = new Dictionary<string, object>{ { "lay-event", "edit" } } }
+                ,new ToolBarActionButton() { Name = "del", ClassName = "del", Text = "删除", Attributes = new Dictionary<string, object>{ { "lay-event", "del" } } }
+        })
+    </script>
+
+    <script type="text/html" id="TemplateExampleEdit">
+    </script>
+</div>
+
+<script>
+    var index_TemplateExampleDataList = $("#index_TemplateExampleDataList")
+    var bodyheight = 0;
+    $(function () {
+        bodyheight = $(window).height();// document.body.scrollHeight;
+    });
+
+    layui.use(['form', 'table', 'jquery', 'upload'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var upload = layui.upload;
+        var $ = layui.$;
+        bodyheight = $(window).height();
+        var datagrid = freejs.dataGrid(table, form, {
+            //freejs封装参数
+            controller: "/Admin/TemplateExample",
+            pageElem: index_TemplateExampleDataList,
+            elem: '#TemplateExampleDataList',
+            formElem: "TemplateExampleEdit",
+            formArea: { add: ['800px', '600px'], edit: ['800px', '600px']},
+            tableOptions: {
+                //table固定参数
+                where: function () {
+                    var seniorQueryJson = {};
+                    seniorQueryJson = JSON.stringify(seniorQueryJson);
+                    var query = { searchContent: $("input[type=search_txt]", index_TemplateExampleDataList).val(), seniorQueryJson: seniorQueryJson };
+                    return query;
+                },
+                cols: [[
+                    { checkbox: true, fixed: true }
+                    , { field: '@nameof(Model.Id)', title: 'Id', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: '@nameof(Model.DataType)', title: '数据类型', width: 120, edit: 'text' }
+                    , { field: '@nameof(Model.TemplateImg)', title: '模板图片', width: 160, edit: 'text', sort: true }
+                    , { field: '@nameof(Model.TempateName)', title: '模板名称' }
+                    , { field: '@nameof(Model.WatchCount)', title: '查看次数', width: 80 }
+                    , { field: '@nameof(Model.DownloadCount)', title: '下载统计', width: 80 }
+                    , { field: '@nameof(Model.StarCount)', title: 'Star统计', width: 80 }
+                    , { field: '@nameof(Model.Status)', title: '状态', width: 80, sort: true }
+                    , { field: '@nameof(Model.CreateDt)', title: '创建时间', width: 160 }
+                    , { fixed: 'right', title: '操作', toolbar: '#TemplateExample_bar', width: 120 }
+                ]],
+                page: true,
+                height: bodyheight - 212,
+            },
+            editBefore: function () {
+                //普通图片上传
+                var uploadInst = upload.render({
+                    elem: '#template_upload'
+                    //, url: '/upload/'
+                    ,auto: false
+                    ,choose: function (obj) {
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function (index, file, result) {
+                            $('#template_showimg').attr('src', result); //图片链接（base64）
+                        });
+                    }
+                });
+            },
+            submitBefore: function (data) {
+                data.field.TemplateImg = $('#template_showimg').attr('src');
+                return data;
+            }
+        });
+
+        //扩展按钮
+        datagrid.active.updatePwd = function (obj) {
+        };
+    });
+</script>

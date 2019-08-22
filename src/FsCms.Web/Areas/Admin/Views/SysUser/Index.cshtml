@@ -1,0 +1,153 @@
+﻿
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model FsCms.Entity.SysUser
+<div style="background:#fff; padding:10px 5px 0px 5px; " id="index_SysUserDataList">
+    <div class="dataGrid_Toolbar">
+        <form class="layui-form" action="">
+            <div class="layui-form-item fs-mb-0">
+                <div class="layui-inline" style="float: left;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        @*<button class="layui-btn layui-btn-normal layui-btn-sm" type="button" data-type="add"><i class="layui-icon">&#xe61f;</i>新增</button>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" type="button" data-type="update"><i class="layui-icon">&#xe642;</i>修改</button>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" type="button" data-type="delete"><i class="layui-icon">&#xe640;</i>删除</button>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" type="button" data-type="export"><i class="layui-icon">&#xe630;</i>导出</button>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" ol54`   sxfdsxstype="button" data-type="updatePwd"><i class="layui-icon">&#xe630;</i>修改密码</button>*@
+
+                        @Html.ListToolBarButtons(User,new List<ToolBarActionButton>() {
+                              new ToolBarActionButton() { Name = "add", ClassName = "add", Text = "新增", Attributes = new Dictionary<string, object>{ { "data-type", "add" } } }
+                              ,new ToolBarActionButton() { Name = "update", ClassName = "update", Text = "修改", Attributes = new Dictionary<string, object>{ { "data-type", "update" } } }
+                              ,new ToolBarActionButton() { Name = "delete", ClassName = "delete", Text = "删除", Attributes = new Dictionary<string, object>{ { "data-type", "delete" } } }
+                              ,new ToolBarActionButton() { Name = "export", ClassName = "export", Text = "导出", Attributes = new Dictionary<string, object>{ { "data-type", "export" } } }
+                             ,new ToolBarActionButton() { Name = "updatePwd", ClassName = "updatePwd", Text = "修改密码", Attributes = new Dictionary<string, object>{ { "data-type", "updatePwd" } } }
+                        })
+                    </div>
+                </div>
+
+                <div class="layui-inline" style="float: right;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        <input class="layui-input fs-search-txt" name="id" id="search_txt" placeholder="标题/内容" autocomplete="off">
+                    </div>
+                    <div class="layui-input-inline" style="width: auto;">
+                        <button class="layui-btn layui-btn-sm" type="button" data-type="reload"><i class="layui-icon">&#xe615;</i>搜索</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="layui-hide" id="SysUserDataList" lay-filter="SysUserDataList"></table>
+    <script type="text/html" id="SysUser_bar">
+        @*<a class="layui-btn layui-btn-xs" lay-event="updatePwd">修改密码</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>*@
+        @Html.ListViewButtons(User, new List<ToolBarActionButton>() {
+                             new ToolBarActionButton() { Name = "updatePwd", ClassName = "updatePwd", Text = "修改密码", Attributes = new Dictionary<string, object>{ { "lay-event", "updatePwd" } } }
+                             ,new ToolBarActionButton() { Name = "edit", ClassName = "edit", Text = "编辑", Attributes = new Dictionary<string, object>{ { "lay-event", "edit" } } }
+                             ,new ToolBarActionButton() { Name = "del", ClassName = "del", Text = "删除", Attributes = new Dictionary<string, object>{ { "lay-event", "del" } } }
+                       })
+
+    </script>
+
+    <script type="text/html" id="SysUserEdit">
+    </script>
+</div>
+
+<script>
+    var index_SysUserDataList = $("#index_SysUserDataList")
+    var bodyheight = 0;
+    $(function () {
+        bodyheight = $(window).height();// document.body.scrollHeight;
+    });
+
+    layui.use(['form', 'table', 'jquery'], function () {
+        var table = layui.table;
+        var form = layui.form
+        var $ = layui.$;
+        bodyheight = $(window).height();
+        var datagrid = freejs.dataGrid(table, form, {
+            //freejs封装参数
+            controller: "/Admin/SysUser",
+            pageElem: index_SysUserDataList,
+            elem: '#SysUserDataList',
+            formElem: "SysUserEdit",
+            formArea: { add: ['800px', '600px'], edit: ['800px', '600px']},
+            tableOptions: {
+                //table固定参数
+                where: function () {
+                    var seniorQueryJson = {};
+                    seniorQueryJson = JSON.stringify(seniorQueryJson);
+                    var query = { searchContent: $("input[type=search_txt]", index_SysUserDataList).val(), seniorQueryJson: seniorQueryJson };
+                    return query;
+                },
+                cols: [[
+                    { checkbox: true, fixed: true }
+                    , { field: '@nameof(Model.Id)', title: 'Id', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: '@nameof(Model.UserName)', title: '用户名', width: 160, edit: 'text' }
+                    , { field: '@nameof(Model.RealName)', title: '真实姓名', width: 160, edit: 'text', sort: true }
+                    , { field: '@nameof(Model.Email)', title: '邮箱' }
+                    , { field: '@nameof(Model.MobilePhone)', title: '手机', width: 120 }
+                    , { field: '@nameof(Model.Status)', title: '状态', width: 80, sort: true }
+                    , { field: '@nameof(Model.CreateDt)', title: '创建时间', width: 160 }
+                    , { fixed: 'right', title: '操作', toolbar: '#SysUser_bar', width: 220 }
+                ]],
+                page: true,
+                height: bodyheight - 212,
+            },
+            editBefore: function () {
+
+            },
+            submitBefore: function (data) {
+                var arr = new Array();
+                $("input:checkbox[name='userrole']:checked").each(function (i) {
+                    arr[i] = $(this).val();
+                });
+                data.field.userrole = arr.join(",");//将数组合并成字符串
+                return data;
+            },
+            rowTool: {
+                toolEventExt: function (obj, layEvent) {
+                    if (layEvent === 'updatePwd') { //编辑
+                        updatepwd(obj.data.Id);
+                    }
+                }
+            }
+        });
+
+        //扩展按钮
+        datagrid.active.updatePwd = function (obj) {
+            var checkStatus = table.checkStatus("SysUserDataList")
+            var data = checkStatus.data;
+            updatepwd(data.select(function (item) { return item.Id;}).join('|'));
+        };
+
+        var updatepwd = function (id) {
+            layer.prompt({
+                formType: 1, title: "修改密码"
+                , value: ""
+            }, function (value, index) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/Admin/SysUser/UpdatePwd",
+                    data: { id: id, pwd: value },
+                    //contentType: "application/json; charset=utf-8",
+                    //dataType: "json",
+                    beforeSend: function () {
+                        saveLoading = freejs.showLoading({ msg: "密码修改中...", shade: 0.2 });
+                    },
+                    success: function (e) {
+                        if (e.Status == 1) {
+                            freejs.showMessage({ title: "提示", msg: e.Msg || "修改成功", type: 1 });
+                        }
+                        else {
+                            freejs.showMessage({ title: "提示", msg: e.Msg, type: 2 });
+                        }
+                        freejs.closeLoading(saveLoading);
+                    }
+                });
+                layer.close(index);
+            });
+        };
+    });
+</script>

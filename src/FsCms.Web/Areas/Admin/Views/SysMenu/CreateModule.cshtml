@@ -1,0 +1,62 @@
+﻿@using FsCms.Entity;
+@model FsCms.Entity.SysMenuView
+@{ Layout = ""; }
+
+<form class="layui-form" action="" id="frm_SysMenuAdd">
+    <div class="form-module-content">
+        <div class="layui-form-item">
+            <label class="layui-form-label">上级菜单 </label>
+            <div class="layui-input-block">
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.CreateBy)
+                @Html.HiddenFor(m => m.CreateDt)
+                @Html.HiddenFor(m => m.Status)
+                @Html.HiddenFor(m => m.menubuttons)
+                @Html.DropDownList("ParentID", ViewBag.SysMenuList as List<SelectListItem>, "", new Dictionary<string, object> { { "class", "plate_text" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单名称</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.MenuName, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单地址</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.MenuUrl, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入摘要" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">序号</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.Sort, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入摘要" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜单描述</label>
+            <div class="layui-input-block">
+                @Html.TextAreaFor(m => m.Description, 3, 3, new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+        <div class="layui-col-xs12 ">
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜单按钮</label>
+                <div class="layui-input-block">
+                    @foreach (var item in (ViewBag.ButtonList as List<SelectListItem>))
+                    {
+                        <input type="checkbox" name="menubuttons" value="@item.Value" title="@item.Text">
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="form-module-footer">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>*@
+</form>

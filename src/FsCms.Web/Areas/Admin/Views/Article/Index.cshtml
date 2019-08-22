@@ -1,0 +1,198 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div style=" padding:0px 5px 0px 5px; " id="index_ArticleDataList">
+
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md2">
+            <div class="grid-demo grid-demo-bg1">
+                <div class="layui-card">
+                    <div class="layui-card-header">文章分类</div>
+                    <div class="layui-card-body">
+                        <ul id="article_articleTypeLeftTree"></ul>
+                    </div>
+                </div>
+                @*<blockquote class="layui-elem-quote layui-quote-nm">
+                        <ul id="articleTypeLeftTree"></ul>
+                    </blockquote>*@
+            </div>
+        </div>
+        <div class="layui-col-md10">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px 8px;">
+                    <div class="dataGrid_Toolbar">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item fs-mb-0">
+                                <div class="layui-inline" style="float: left;">
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        @Html.ListToolBarButtons(User,new List<ToolBarActionButton>() {
+                                             new ToolBarActionButton() { Name = "add", ClassName = "add", Text = "新增", Attributes = new Dictionary<string, object>{ { "data-type", "add" } } }
+                                             ,new ToolBarActionButton() { Name = "update", ClassName = "update", Text = "修改", Attributes = new Dictionary<string, object>{ { "data-type", "update" } } }
+                                             ,new ToolBarActionButton() { Name = "delete", ClassName = "delete", Text = "删除", Attributes = new Dictionary<string, object>{ { "data-type", "delete" } } }
+                                             ,new ToolBarActionButton() { Name = "export", ClassName = "export", Text = "导出", Attributes = new Dictionary<string, object>{ { "data-type", "export" } } }
+                                             ,new ToolBarActionButton() { Name = "sync", ClassName = "sync", Text = "同步文章和分类", Attributes = new Dictionary<string, object>{ { "data-type", "sync" } } }
+                                        })
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline" style="float: right;">
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <input class="layui-input fs-search-txt" name="id" id="search_txt" placeholder="标题/内容" autocomplete="off">
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <button class="layui-btn layui-btn-sm" type="button" data-type="reload"><i class="layui-icon">&#xe615;</i>搜索</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <table class="layui-hide" id="ArticleDataList" lay-filter="ArticleDataList"></table>
+                    <script type="text/html" id="Article_bar">
+                        @Html.ListViewButtons(User, new List<ToolBarActionButton>() {
+                            new ToolBarActionButton() { Name = "edit", ClassName = "edit", Text = "编辑", Attributes = new Dictionary<string, object>{ { "lay-event", "edit" } } }
+                            ,new ToolBarActionButton() { Name = "del", ClassName = "del", Text = "删除", Attributes = new Dictionary<string, object>{ { "lay-event", "del" } } }
+                        })
+                    </script>
+
+                    <script type="text/html" id="ArticleEdit">
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var index_ArticleDataList = $("#index_ArticleDataList")
+    var bodyheight = 0;
+    var treeid = "";
+    $(function () {
+        bodyheight = $(window).height();// document.body.scrollHeight;
+    });
+
+    layui.extend({
+        laymd: "../../ext/laymd/laymd",
+    }).use(['form', 'table', 'jquery', 'tree', 'laymd'], function () {
+        var table = layui.table;
+        var laymd = layui.laymd;
+        var form = layui.form
+        var $ = layui.$;
+        bodyheight = $(window).height();
+        var gridview = freejs.dataGrid(table, form, {
+            //freejs封装参数
+            controller: "/Admin/Article",
+            pageElem: index_ArticleDataList,
+            addParamterExt: function () {
+                return { id: treeid };
+            },
+            elem: '#ArticleDataList',
+            formElem: "ArticleEdit",
+            formArea: ['1100px', '660px'],
+            tableOptions: {
+                //table固定参数
+                where: function () {
+                    var seniorQueryJson = {};
+                    if (treeid != "") {
+                        seniorQueryJson.TypeID = treeid;
+                    }
+                    seniorQueryJson = JSON.stringify(seniorQueryJson);
+                    var query = { searchContent: $("input[type=search_txt]", index_ArticleDataList).val(), seniorQueryJson: seniorQueryJson };
+                    return query;
+                },
+                cols: [[
+                    { checkbox: true, fixed: true }
+                    , { field: 'Id', title: 'Id', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: 'Title', title: '标题', edit: 'text' }
+                    , { field: 'Status', title: '状态', width: 80, edit: 'text', sort: true }
+                    , { field: 'WatchCount', title: '阅读量市', width: 100 }
+                    , { field: 'StarCount', title: '获赞数', width: 100 }
+                    , { field: 'CreateDt', title: '创建时间', width: 160, sort: true }
+                    , { field: 'UpdateDt', title: '修改时间', width: 160 }
+                    , { fixed: 'right', title: '操作', toolbar: '#Article_bar', width: 150 }
+                ]],
+                page: true,
+                height: bodyheight - 212,
+            },
+            editBefore: function (_form, data) {
+                form.on('switch(switchTest)', function (_data) {
+                    if (this.checked) {
+                        $("#OriginUrlArea").hide();
+                        $("#DocContentArea").show();
+                    }
+                    else {
+                        $("#OriginUrlArea").show();
+                        $("#DocContentArea").hide();
+
+                    }
+                });
+                var md = laymd('#DocContentHtml', {});
+                md.setText($("#DocContent").val());
+                md.on('change', function () {
+                    //这里借用marked.js解析效率比HyperDown快,用户可自行找解析器
+                    $("#DocContent").val(this.getText())
+                    this.setPreview(marked(this.getText()));
+                });
+                //初始化数据预览
+                md.do('change');
+            },
+            submitBefore: function (data) {
+                data.field.OriginType = $("#TabOriginType").find("li.layui-this").eq(0).attr("origintype");
+                return data;
+            },
+            rowTool: {
+                toolEventExt: function (obj, layEvent) {
+                    debugger
+                    if (layEvent === 'sync') { //编辑
+                        syncArticles(this);
+                    }
+                }
+            }
+        });
+
+        //扩展按钮
+        gridview.active.sync = function () {
+            syncArticles(this);
+        };
+
+        var syncArticles = function (_that) {
+            freejs.showConfirm({
+                msg: "是否同步文章和分类信息？",
+                yes: function (index) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "/Admin/Article/SyncData",
+                        data: {},
+                        //contentType: "application/json; charset=utf-8",
+                        //dataType: "json",
+                        beforeSend: function () {
+                            saveLoading = freejs.showLoading({ msg: "数据同步中...", shade: 0.2 });
+                        },
+                        success: function (e) {
+                            if (e.Status == 1) {
+                                freejs.showMessage({ title: "提示", msg: e.Msg || "同步成功", type: 1 });
+                                _that.reload();
+                            }
+                            else {
+                                freejs.showMessage({ title: "提示", msg: e.Msg, type: 2 });
+                            }
+                            freejs.closeLoading(saveLoading);
+                        }
+                    });
+                    layer.close(index);
+                }
+            });
+        };
+
+        var treeData =  @Html.Raw(Html.ToJson(ViewBag.ArticleTreeDatas as List<FsCms.Entity.ArticleTypeTreeNode>));
+        layui.tree({
+            elem: '#article_articleTypeLeftTree', //传入元素选择器
+            nodes: treeData,
+            click: function (node) {
+                treeid = node.id;
+                gridview.reload();
+                console.log(node) //node即为当前点击的节点数据
+            }
+        });
+
+    });
+</script>

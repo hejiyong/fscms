@@ -1,0 +1,94 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model FsCms.Entity.SysUpdateLog
+<div style=" padding:0px 5px 0px 5px; " id="index_UpdateLogDataList">
+    <div class="dataGrid_Toolbar">
+        <form class="layui-form" action="">
+            <div class="layui-form-item fs-mb-0">
+                <div class="layui-inline" style="float: left;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        @Html.ListToolBarButtons(User,new List<ToolBarActionButton>() {
+                             new ToolBarActionButton() { Name = "add", ClassName = "add", Text = "新增", Attributes = new Dictionary<string, object>{ { "data-type", "add" } } }
+                             ,new ToolBarActionButton() { Name = "update", ClassName = "update", Text = "修改", Attributes = new Dictionary<string, object>{ { "data-type", "update" } } }
+                             ,new ToolBarActionButton() { Name = "delete", ClassName = "delete", Text = "删除", Attributes = new Dictionary<string, object>{ { "data-type", "delete" } } }
+                             ,new ToolBarActionButton() { Name = "export", ClassName = "export", Text = "导出", Attributes = new Dictionary<string, object>{ { "data-type", "export" } } }
+                        })
+                    </div>
+                </div>
+
+                <div class="layui-inline" style="float: right;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        <input class="layui-input fs-search-txt" name="id" id="search_txt" placeholder="标题/内容" autocomplete="off">
+                    </div>
+                    <div class="layui-input-inline" style="width: auto;">
+                        <button class="layui-btn layui-btn-sm" type="button" data-type="reload"><i class="layui-icon">&#xe615;</i>搜索</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="layui-hide" id="UpdateLogDataList" lay-filter="UpdateLogDataList"></table>
+    <script type="text/html" id="SysUpdateLog_Bar">
+        @Html.ListViewButtons(User, new List<ToolBarActionButton>() {
+            new ToolBarActionButton() { Name = "edit", ClassName = "edit", Text = "编辑", Attributes = new Dictionary<string, object>{ { "lay-event", "edit" } } }
+            ,new ToolBarActionButton() { Name = "del", ClassName = "del", Text = "删除", Attributes = new Dictionary<string, object>{ { "lay-event", "del" } } }
+        })
+    </script>
+
+    <script type="text/html" id="UpdateLogEdit">
+    </script>
+</div>
+<script>
+    var index_UpdateLogDataList = $("#index_UpdateLogDataList")
+    var bodyheight = 0;
+    $(function () {
+        bodyheight = $(window).height();// document.body.scrollHeight;
+    });
+
+    layui.extend({
+        laymd: "../../ext/laymd/laymd",
+    }).use(['form', 'table', 'jquery', 'tree', 'laymd'], function () {
+        var table = layui.table;
+        var laymd = layui.laymd;
+        var form = layui.form
+        var $ = layui.$;
+        bodyheight = $(window).height();
+        var gridview = freejs.dataGrid(table, form, {
+            //freejs封装参数
+            controller: "/Admin/SysUpdateLog",
+            pageElem: index_UpdateLogDataList,
+            elem: '#UpdateLogDataList',
+            formElem: "UpdateLogEdit",
+            formArea: ['600px', '400px'],
+            tableOptions: {
+                //table固定参数
+                where: function () {
+                    var seniorQueryJson = {};
+                    seniorQueryJson = JSON.stringify(seniorQueryJson);
+                    var query = { searchContent: $("input[type=search_txt]", index_UpdateLogDataList).val(), seniorQueryJson: seniorQueryJson };
+                    return query;
+                },
+                cols: [[
+                    { checkbox: true, fixed: true }
+                    , { field: 'Id', title: 'Id', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: '@nameof(Model.Remark)', title: '备注',}
+                    , { field: '@nameof(Model.VersionNum)', title: '版本号', width: 100 }
+                    , { field: '@nameof(Model.Status)', title: '状态', width: 100 }
+                    , { field: '@nameof(Model.CreateDt)', title: '创建时间', width: 160, sort: true }
+                    , { field: '@nameof(Model.CreateBy)', title: '创建人', width: 160 }
+                    , { fixed: 'right', title: '操作', toolbar: '#SysUpdateLog_Bar', width: 150 }
+                ]],
+                page: true,
+                height: "full-202",
+            },
+            editBefore: function (_form, data) {
+               
+            },
+            submitBefore: function (data) {
+                return data;
+            }
+        });
+    });
+</script>

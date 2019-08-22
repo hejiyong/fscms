@@ -1,0 +1,67 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var url = ViewBag.pathUrl;
+}
+<div class="layui-header header header-index" winter="">
+    <div class="layui-main">
+        <a class="logo" href="/">
+            @*<img src="//res.layui.com/static/images/layui/logo.png" alt="layui">*@
+            <span style="font-size:25px; letter-spacing:1px; color:#fff;">FreeSql</span>
+        </a>
+        <div class="layui-form component">
+            <select lay-search="" class="layui-nav" lay-filter="component">
+                <option value="">搜索功能</option>
+                @{
+                    var articlelist = (ViewBag.ArticleList.Item1 as List<ArticleContent>);
+                }
+                @if (articlelist != null)
+                {
+                    foreach (var item in (articlelist as List<ArticleContent>))
+                    {
+                        <option value="@item.Id">@item.Title</option>
+                    }
+                }
+            </select>
+        </div>
+        <ul class="layui-nav">
+            <li class='layui-nav-item @(url=="/doc"?"layui-this":"")'>
+                <a href="/doc" target="_self">文档<!-- <span class="layui-badge-dot"></span> --></a>
+            </li>
+            <li class='layui-nav-item @(url=="/example"?"layui-this":"")'>
+                <a href="/example" target="_self">示例<!-- <span class="layui-badge-dot"></span> --></a>
+            </li>
+            <li class='layui-nav-item @(url=="/bbs"?"layui-this":"")'>
+                <a href="/bbs" target="_self">社区</a>
+            </li>
+
+            @*<li class="layui-nav-item">
+                    <a href="javascript:;"><span class="layui-badge-dot" style="margin: -5px 0 0 -15px;"></span>周边<span class="layui-nav-more"></span></a>
+                    <dl class="layui-nav-child layui-anim layui-anim-upbit">
+                        <dd lay-unselect="">
+                            <a href="//fly.layui.com/extend/" target="_blank">扩展组件</a>
+                        </dd>
+                        <dd lay-unselect="">
+                            <a href="//fly.layui.com/store/" target="_blank">模板市场 <span class="layui-badge-dot"></span></a>
+                            <hr>
+                        </dd>
+
+                        <dd class="layui-hide-sm layui-show-xs" lay-unselect="">
+                            <a href="//fly.layui.com/" target="_blank">社区交流</a>
+                            <hr>
+                        </dd>
+                        <dd lay-unselect=""><a href="/admin/" target="_blank">后台模板</a></dd>
+                        <dd lay-unselect=""><a href="/layim/" target="_blank">即时聊天</a><hr></dd>
+
+                        <dd lay-unselect=""><a href="/alone.html" target="_blank" lay-unselect="">独立组件</a></dd>
+                        <dd lay-unselect=""><a href="#" target="_blank">Axure 组件</a></dd>
+                    </dl>
+                </li>*@
+            <li class='layui-nav-item @(url=="/Template"?"layui-this":"")'>
+                <a href="/Template">模板下载<span class="layui-badge-dot" style="margin-top: -5px;"></span></a>
+            </li>
+            <span class="layui-nav-bar" style="left: 54px; top: 55px; width: 0px; opacity: 0;"></span>
+        </ul>
+    </div>
+</div>

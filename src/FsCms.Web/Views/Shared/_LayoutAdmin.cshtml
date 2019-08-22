@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <environment include="Development">
+        <link href="~/lib/layui/css/layui.css" rel="stylesheet" />
+        @*<link href="~/lib/layui/lay/modules/preview.css" rel="stylesheet" />*@
+        <script src="~/js/common.js"></script>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+
+        <link href="~/lib/JqGrid/css/ui.jqgrid.css" rel="stylesheet" />
+        <link href="~/lib/JqGrid/css/ui.jqgrid-bootstrap-ui.css" rel="stylesheet" />
+        <link href="~/lib/JqGrid/css/ui.jqgrid-bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/Bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/css/app.css" rel="stylesheet" />
+
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+        <script src="~/lib/JqGrid/js/jquery.jqGrid.min.js"></script>
+        <script src="~/lib/Bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/lib/JqGrid/src/grid.treegrid.js"></script>
+        <script src="~/lib/JqGrid/js/i18n/grid.locale-cn.js"></script>
+
+        <script src="~/lib/layui/layui.js"></script>
+        <link href="~/css/admin.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        @*<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+            asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+            asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />*@
+
+        <link href="~/lib/layui/css/layui.css" rel="stylesheet" />
+        @*<link href="~/lib/layui/lay/modules/preview.css" rel="stylesheet" />*@
+        <script src="~/js/common.js"></script>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+
+        <link href="~/lib/JqGrid/css/ui.jqgrid.css" rel="stylesheet" />
+        <link href="~/lib/JqGrid/css/ui.jqgrid-bootstrap-ui.css" rel="stylesheet" />
+        <link href="~/lib/JqGrid/css/ui.jqgrid-bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/Bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/css/app.css" rel="stylesheet" />
+
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+        <script src="~/lib/JqGrid/js/jquery.jqGrid.min.js"></script>
+        <script src="~/lib/Bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/lib/JqGrid/src/grid.treegrid.js"></script>
+        <script src="~/lib/JqGrid/js/i18n/grid.locale-cn.js"></script>
+
+        <script src="~/lib/layui/layui.js"></script>
+        <link href="~/css/admin.css" rel="stylesheet" />
+    </environment>
+</head>
+<body class="layui-layout-body @*layadmin-side-shrink*@" id="LAY_home" style="background-color: #fff;" data-date="12-27">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect="">
+                    <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                        <i class="layui-icon layui-icon-spread-left" id="LAY_app_flexible"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect="">
+                    <a href="../" target="_blank" title="前台">
+                        <i class="layui-icon layui-icon-website"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="javascript:;" layadmin-event="refresh" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+                @*<li class="layui-nav-item layui-hide-xs" lay-unselect="">
+                        <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach" lay-action="template/search/keywords=">
+                    </li>*@
+                <li class="layui-nav-item active"><a href="/Admin" target="_self">文章管理</a></li>
+                @*<li class="layui-nav-item"><a href="/Admin" target="_self">论坛管理</a></li>
+                <li class="layui-nav-item"><a href="/Admin" target="_self">模板管理</a></li>*@
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        @*<img src="#" class="layui-nav-img">*@
+                        @User.Identity.Name
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">基本资料</a></dd>
+                        <dd><a href="">安全设置</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="/logout">退出</a></li>
+            </ul>
+        </div>
+
+        @*<partial name="_CookieConsentPartial" />*@
+        @RenderBody()
+
+        <div class="layui-footer footer">
+            <!-- 底部固定区域 -->
+            © FsCms.net - FreeSql官网后台
+        </div>
+    </div>
+    <environment exclude="Development">
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+
+    </environment>
+
+    <environment include="Development">
+
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+    </environment>
+    <script>
+        layui.config({
+            dir: 'lib/layui/',
+            base: '/lib/layui/lay/modules/'
+            , version: 30014
+        }).use('global');
+
+        window.global = {
+            preview: function () {
+                var preview = document.getElementById('LAY_home');
+                return preview ? preview.innerHTML : '';
+            }()
+        };
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

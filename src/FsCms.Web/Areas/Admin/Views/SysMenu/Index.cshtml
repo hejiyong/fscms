@@ -1,0 +1,172 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model FsCms.Entity.SysMenu
+<div style="background:none; padding:2px 5px 0px 5px; " id="index_SysMenuDataList">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md2">
+            <div class="grid-demo grid-demo-bg1">
+
+                <div class="layui-card">
+                    <div class="layui-card-header">菜单目录</div>
+                    <div class="layui-card-body">
+                        <ul id="sysMenuLeftTree"></ul>
+                    </div>
+                </div>
+                @*<blockquote class="layui-elem-quote layui-quote-nm">
+                        <ul id="articleTypeLeftTree"></ul>
+                    </blockquote>*@
+            </div>
+        </div>
+        <div class="layui-col-md10">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding: 10px 8px;">
+                    <div class="dataGrid_Toolbar">
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item fs-mb-0">
+                                <div class="layui-inline" style="float: left;">
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        @Html.ListToolBarButtons(User,new List<ToolBarActionButton>() {
+                                             new ToolBarActionButton() { Name = "add", ClassName = "add", Text = "新增", Attributes = new Dictionary<string, object>{ { "data-type", "add" } } }
+                                             ,new ToolBarActionButton() { Name = "update", ClassName = "update", Text = "修改", Attributes = new Dictionary<string, object>{ { "data-type", "update" } } }
+                                             ,new ToolBarActionButton() { Name = "delete", ClassName = "delete", Text = "删除", Attributes = new Dictionary<string, object>{ { "data-type", "delete" } } }
+                                             ,new ToolBarActionButton() { Name = "export", ClassName = "export", Text = "导出", Attributes = new Dictionary<string, object>{ { "data-type", "export" } } }
+                                        })
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline" style="float: right;">
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <input class="layui-input fs-search-txt" name="id" id="search_txt" placeholder="标题/内容" autocomplete="off">
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <button class="layui-btn layui-btn-sm" type="button" data-type="reload"><i class="layui-icon">&#xe615;</i>搜索</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <table class="layui-hide" id="SysMenuDataList" style="background:#fff;" lay-filter="SysMenuDataList"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/html" id="SysMenu_Bar">
+        @Html.ListViewButtons(User, new List<ToolBarActionButton>() {
+            new ToolBarActionButton() { Name = "edit", ClassName = "edit", Text = "编辑", Attributes = new Dictionary<string, object>{ { "lay-event", "edit" } } }
+            ,new ToolBarActionButton() { Name = "del", ClassName = "del", Text = "删除", Attributes = new Dictionary<string, object>{ { "lay-event", "del" } } }
+        })
+    </script>
+
+    <script type="text/html" id="SysMenuEdit">
+    </script>
+</div>
+
+<script>
+    var index_SysMenuDataList = $("#index_SysMenuDataList")
+    var bodyheight = 0;
+    var treeid = "";
+    $(function () {
+        bodyheight = $(window).height();// document.body.scrollHeight;
+    });
+
+    layui.use(['form', 'table', 'jquery', 'tree', 'selectY'], function () {
+        var table = layui.table;
+        var form = layui.form
+        var $ = layui.$;
+        bodyheight = $(window).height();
+
+        var loadTreeData = function () {
+            $.ajax({
+                url: '/Admin/SysMenu/GetTreeData',
+                data: {},
+                type: "GET",
+                dataType: 'json',
+                success: function (data) {
+                    $("#sysMenuLeftTree").html("");
+                    layui.tree({
+                        elem: '#sysMenuLeftTree', //传入元素选择器
+                        nodes: data,
+                        skin: 'shihuang',
+                        click: function (node) {
+                            treeid = node.id;
+                            gridview.reload();
+                            console.log(node) //node即为当前点击的节点数据
+                        }
+                    });
+                }
+            });
+        };
+
+        var gridview = freejs.dataGrid(table, form, {
+            //freejs封装参数
+            controller: "/Admin/SysMenu",
+            addParamterExt: function () {
+                return { id: "", parentid: treeid };
+            },
+            pageElem: index_SysMenuDataList,
+            elem: '#SysMenuDataList',
+            formElem: "SysMenuEdit",
+            formArea: ['500px', '660px'],
+            tableOptions: {
+                //table固定参数
+                where: function () {
+                    var seniorQueryJson = {};
+                    if (treeid !="") {
+                        seniorQueryJson.ParentID = treeid;
+                    }
+                    seniorQueryJson = JSON.stringify(seniorQueryJson);
+                    var query = { searchContent: $("input[type=search_txt]", index_SysMenuDataList).val(), seniorQueryJson: seniorQueryJson };
+                    return query;
+                },
+                cols: [[
+                    { checkbox: true, fixed: true }
+                    , { field: '@nameof(Model.Id)', title: 'Id', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: '@nameof(Model.MenuName)', title: '菜单名称', edit: 'text' }
+                    , { field: '@nameof(Model.MenuUrl)', title: '菜单地址', width: 180, edit: 'text', sort: true }
+                    , { field: '@nameof(Model.Sort)', title: '序号', width: 100 }
+                    , { field: '@nameof(Model.Description)', title: '描述', width: 100 }
+                    , { field: '@nameof(Model.Status)', title: '状态', width: 80, sort: true }
+                    , { field: '@nameof(Model.CreateDt)', title: '创建时间', width: 130 }
+                    , { fixed: 'right', title: '操作', toolbar: '#SysMenu_Bar', width: 150 }
+                ]],
+                page: true,
+                height: bodyheight - 212,
+            },
+            editBefore: function (_form, data) {
+                //<input type="hidden" id="demo" value="安徽省/合肥市/蜀山区"/>
+                //var selectY = layui.selectY;
+                //selectY({
+                //    elem: '#demo',
+                //    data: data,
+                //    //url为ajax 获取json数据，当url属性有值时，不提取data属性值
+                //    //url:'https://cityApi.html',
+                //    placeholder: '请选择地址',//初始提示
+                //    disabledTips: '当前区域没有产品',//被禁用时提示
+                //    success: function (e) { //回调
+                //        console.log(e.data);//选择的name值
+                //        console.log(e.ids);//选择的id数据
+                //    }
+                //});
+            },
+            submitBefore: function (data) {
+                data.field.ParentID = parseInt(data.field.ParentID);
+                var menubuttons = [];
+                $("input:checkbox[name='menubuttons']:checked").each(function (i) {
+                    menubuttons.push({ id: $(this).val(), title: $(this).attr('title')});
+                });
+                data.field.menubuttons = JSON.stringify(menubuttons);//将数组合并成字符串
+                return data;
+            },
+            submitAfter: function (e) {
+                loadTreeData();
+            }
+        });
+
+        loadTreeData();
+        //var treeData =  @*@Html.Raw(Html.ToJson(ViewBag.SysMenuTreeDatas as List<FsCms.Entity.SysMenuTreeNode>));*@
+
+    });
+</script>

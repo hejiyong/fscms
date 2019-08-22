@@ -1,0 +1,29 @@
+﻿@using FsCms.Entity;
+@model FsCms.Entity.SysRole
+@{  Layout = ""; }
+<form class="layui-form" action="" id="frm_SysRoleEdit">
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.CreateBy)
+    @Html.HiddenFor(m => m.CreateDt)
+    <div class="form-module-content">
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.RoleName, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色编码</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.RoleCode, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入摘要" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述 </label>
+            <div class="layui-input-block">
+                @Html.TextAreaFor(m => m.Description, new Dictionary<string, object> { { "class", "layui-textarea" }, { "maxlength", 500 }, { "data-msg-maxlength", "最大长度为:500" } })<string, object><string, object><string, object><string, object><string, object><string, object>
+            </div>
+        </div>
+    </div>
+</form>

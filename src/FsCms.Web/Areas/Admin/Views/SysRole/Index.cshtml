@@ -1,0 +1,188 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+@model FsCms.Entity.SysRole
+<div style="background:#fff; padding:10px 5px 0px 5px; " id="index_SysRoleDataList">
+    <div class="dataGrid_Toolbar">
+        <form class="layui-form" action="">
+            <div class="layui-form-item fs-mb-0">
+                <div class="layui-inline" style="float: left;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        @Html.ListToolBarButtons(User,new List<ToolBarActionButton>() {
+                             new ToolBarActionButton() { Name = "add", ClassName = "add", Text = "新增", Attributes = new Dictionary<string, object>{ { "data-type", "add" } } }
+                             ,new ToolBarActionButton() { Name = "update", ClassName = "update", Text = "修改", Attributes = new Dictionary<string, object>{ { "data-type", "update" } } }
+                             ,new ToolBarActionButton() { Name = "delete", ClassName = "delete", Text = "删除", Attributes = new Dictionary<string, object>{ { "data-type", "delete" } } }
+                             ,new ToolBarActionButton() { Name = "export", ClassName = "export", Text = "导出", Attributes = new Dictionary<string, object>{ { "data-type", "export" } } }
+                             ,new ToolBarActionButton() { Name = "setPerview", ClassName = "setPerview", Text = "授权", Attributes = new Dictionary<string, object>{ { "data-type", "setPerview" } } }
+                        })
+                    </div>
+                </div>
+
+                <div class="layui-inline" style="float: right;">
+                    <div class="layui-input-inline" style="width: auto;">
+                        <input class="layui-input fs-search-txt" name="id" id="search_txt" placeholder="角色编码/角色名称" autocomplete="off">
+                    </div>
+                    <div class="layui-input-inline" style="width: auto;">
+                        <button class="layui-btn layui-btn-sm" type="button" data-type="reload"><i class="layui-icon">&#xe615;</i>搜索</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <table class="layui-hide" id="SysRoleDataList" lay-filter="SysRoleDataList"></table>
+    <script type="text/html" id="SysRole_bar">
+        @Html.ListViewButtons(User, new List<ToolBarActionButton>() {
+            new ToolBarActionButton() { Name = "setPerview", ClassName = "setPerview", Text = "授权", Attributes = new Dictionary<string, object>{ { "lay-event", "setPerview" } } }
+            ,new ToolBarActionButton() { Name = "edit", ClassName = "edit", Text = "编辑", Attributes = new Dictionary<string, object>{ { "lay-event", "edit" } } }
+            ,new ToolBarActionButton() { Name = "del", ClassName = "del", Text = "删除", Attributes = new Dictionary<string, object>{ { "lay-event", "del" } } }
+        })
+    </script>
+
+    <script type="text/html" id="SysRoleEdit">
+    </script>
+
+    <script type="text/html" id="SysRoleAuth">
+    </script>
+</div>
+
+<script>
+    var index_SysRoleDataList = $("#index_SysRoleDataList")
+    var bodyheight = 0;
+    $(function () {
+        bodyheight = $(window).height();// document.body.scrollHeight;
+    });
+
+    layui.use(['form', 'treeTable', 'table', 'jquery'], function () {
+        var table = layui.table;
+        var treeTable = layui.treeTable;
+        //var authtree = layui.authtree;
+        var form = layui.form
+        var $ = layui.$;
+        var re = null;
+        bodyheight = $(window).height();
+        var datagrid = freejs.dataGrid(table, form, {
+            //freejs封装参数
+            controller: "/Admin/SysRole",
+            pageElem: index_SysRoleDataList,
+            elem: '#SysRoleDataList',
+            formElem: "SysRoleEdit",
+            formArea: ['1100px', '660px'],
+            tableOptions: {
+                //table固定参数
+                where: function () {
+                    var seniorQueryJson = {};
+                    seniorQueryJson = JSON.stringify(seniorQueryJson);
+                    var query = { searchContent: $("input[type=search_txt]", index_SysRoleDataList).val(), seniorQueryJson: seniorQueryJson };
+                    return query;
+                },
+                cols: [[
+                    { checkbox: true, fixed: true }
+                    , { field: '@nameof(Model.Id)', title: 'Id', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: '@nameof(Model.RoleCode)', title: '角色编码', width: 120 }
+                    , { field: '@nameof(Model.RoleName)', title: '角色名称', width: 160, sort: true }
+                    , { field: '@nameof(Model.Description)', title: '描述' }
+                    , { field: '@nameof(Model.Status)', title: '状态', width: 80, sort: true }
+                    , { field: '@nameof(Model.CreateDt)', title: '创建时间', width: 160 }
+                    , { fixed: 'right', title: '操作', toolbar: '#SysRole_bar', width: 180 }
+                ]],
+                page: true,
+                height: bodyheight - 212,
+            },
+            editBefore: function (_form, data) {
+
+            },
+            submitBefore: function (data) {
+                //var authids = authtree.getAll('#LAY-auth-tree-index');
+                //console.log('Choosed authids is', authids);
+                //obj.field.authids = authids;
+                return data;
+            },
+            rowTool: {
+                toolEventExt: function (obj, layEvent) {
+                    if (layEvent === 'setPerview') { //编辑
+                        var options = {
+                            url: "/Admin/SysRole/AuthModule", paramters: { id: obj.data.Id },
+                            title: "授权",
+                            area: ['1100px', '660px'],
+                            submit: {
+                                url: "/Admin/SysRole/Auth",
+                            },
+                            elmid:"SysRoleAuth",
+                            loadBefore: function () {
+                                $.ajax({
+                                    url: '/Admin/SysMenu/GetTree',
+                                    data: { id: obj.data.Id },
+                                    type: "GET",
+                                    dataType: 'json',
+                                    success: function (data) {
+                                        re = treeTable.render({
+                                            elem: '#tree-table',
+                                            data: data,
+                                            icon_key: 'title',
+                                            is_checkbox: true,
+                                            checked: {
+                                                key: 'id',
+                                                data: data.where(function (w) { return w.ischecked; }).select(function (s) { return s.id; }).join(),
+                                            },
+                                            end: function (e) {
+                                                form.render();
+                                            },
+                                            cols: [
+                                                {
+                                                    key: 'title',
+                                                    title: '菜单名称',
+                                                    width: '100px',
+                                                    template: function (item) {
+                                                        if (item.level == 0) {
+                                                            return '<span style="color:red;">' + item.title + '</span>';
+                                                        } else if (item.level == 1) {
+                                                            return '<span style="color:green;">&nbsp;&nbsp;' + item.title + '</span>';
+                                                        } else if (item.level == 2) {
+                                                            return '<span style="color:#aaa;">&nbsp;&nbsp;&nbsp;&nbsp;' + item.title + '</span>';
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    title: '按钮',
+                                                    align: 'left',
+                                                    template: function (item) {
+                                                        var btn_html = "";
+                                                        var buttons = JSON.parse(item.jsonButtons);
+                                                        $.each(buttons, function (i, btn) {
+                                                            btn_html += '<input type="checkbox" class="btn_css" btnid="' + btn.id + '" name="' + btn.name + '" ' + (btn.ischecked ?'checked="checked"':'') +' title="' + btn.title + '">';
+                                                        });
+                                                        return btn_html;
+                                                    }
+                                                }
+                                            ]
+                                        });
+                                    }
+                                });
+
+                            },
+                            submitBefore: function (data) {
+                                var btns = $('.btn_css:checked');
+                                var btnids = [];
+                                $.each(btns, function(i, item){
+                                    btnids.push($(item).attr("btnid"));
+                                });
+                                data.field.btnids = btnids.join(',');
+                                data.field.authids = treeTable.checked(re).join(',');
+                                return data;
+                            },
+                            submitAfter: function () {
+                            }
+                        };
+                        freejs.dialogWindow.create(options, form);
+                    }
+                }
+            }
+        });
+
+        //扩展按钮
+        datagrid.active.setPerview = function () {
+            alert("授权");
+        };
+    });
+</script>

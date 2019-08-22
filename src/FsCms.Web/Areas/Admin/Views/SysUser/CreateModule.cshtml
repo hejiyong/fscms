@@ -1,0 +1,96 @@
+﻿@using FsCms.Entity;
+@model FsCms.Entity.SysUser
+@{ Layout = ""; }
+
+<script>
+    var SysUserEdit_Area = ['800px', '600px'],
+</script>
+
+<form class="layui-form" action="" id="frm_SysUserAdd">
+
+    <div class="form-module-content">
+        <div class="layui-row">
+            <div class="layui-col-xs6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所属部门 </label>
+                    <div class="layui-input-block">
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.CreateBy)
+                        @Html.HiddenFor(m => m.CreateDt)
+                        @{ ViewBag.OrgList = new List<SelectListItem> { };}
+                        @Html.DropDownList("OrgID", ViewBag.OrgList as List<SelectListItem>, "", new Dictionary<string, object> { { "class", "plate_text" } })
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-col-xs6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">真实名称</label>
+                    <div class="layui-input-block">
+                        @Html.TextBoxFor(m => m.RealName, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-col-xs6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        @Html.TextBoxFor(m => m.UserName, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入摘要" } })
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号码</label>
+                    <div class="layui-input-block">
+                        @Html.TextBoxFor(m => m.MobilePhone, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入摘要" } })
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Email</label>
+                    <div class="layui-input-block">
+                        @Html.TextBoxFor(m => m.Email, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入摘要" } })
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs6">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="status" value="1" title="启用" checked="">
+                        <input type="radio" name="status" value="0" title="关闭">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs12 ">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">描述 </label>
+                    <div class="layui-input-block">
+                        @Html.TextAreaFor(m => m.Remark, new Dictionary<string, object> { { "class", "layui-textarea" }, { "maxlength", 500 }, { "data-msg-maxlength", "最大长度为:500" } })<string, object><string, object><string, object><string, object><string, object><string, object>
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-col-xs12 ">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">授权角色</label>
+                    <div class="layui-input-block">
+                        @foreach (var item in (ViewBag.RoleList as List<SelectListItem>))
+                        {
+                            <input type="checkbox" name="userrole" @(item.Selected ? "checked='checked'" : "") value="@item.Value" title="@item.Text">
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="form-module-footer">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>*@
+</form>

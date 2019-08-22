@@ -1,0 +1,13 @@
+/* selectY 样式表*/
+.selectY-box{position: relative;height: 30px;}
+.selectY-box .show{position:relative;height:28px;line-height: 28px;padding:0 25px 0 10px;min-width:30px;display: inline-block;background-color:#fff;cursor: pointer}
+.selectY-box .show:after{font-family:'layui-icon'!important;content: "\e602";color:#e6e6e6;position: absolute;top:0;right:5px}
+.selectY-box .show i{color:#e6e6e6;padding:0 5px}
+.selectY-box .pop{position: absolute;z-index:99;top:29px;left:0;display: none;box-shadow: 0 2px 5px 0 rgba(0,0,0,.1);}
+.selectY-box .show,.selectY-box .pop ul{border:1px solid #e6e6e6;}
+.selectY-box .pop ul{background-color:#fff;min-width:160px;height:237px;padding:5px 0;float:left;margin-left: -1px;overflow :auto;}
+.selectY-box .pop ul:first-child{margin-left:0}
+.selectY-box .pop ul li{padding:5px 30px 5px 20px;position: relative;cursor: pointer}
+.selectY-box .pop ul li.child-row:after{font-family:'layui-icon'!important;content: "\e602";color:#e6e6e6;position: absolute;top:5px;right:10px}
+.selectY-box .pop ul li:hover{background-color:#f8f8f8}
+.selectY-box .pop ul li.active{color:red}

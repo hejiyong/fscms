@@ -1,0 +1,25 @@
+﻿@using FsCms.Entity;
+@model FsCms.Entity.SysRole
+@{ Layout = ""; }
+<form class="layui-form" action="" id="frm_SysRoleAdd">
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.CreateBy)
+    @Html.HiddenFor(m => m.CreateDt)
+    <div class="form-module-content">
+
+        <div class="layui-form-item">
+                @*<div id="LAY-auth-tree-index"></div>*@
+                <table class="layui-table layui-form" id="tree-table" lay-size="sm"></table>
+                @*
+                    菜单名称       按钮1 按钮2 按钮2 按钮4 按钮5 按钮6 按钮7 按钮8 按钮9 ...
+                    -----------------------------------------------------------------
+                    菜单1
+                      --菜单1-1
+                      --菜单1-2
+                    菜单2
+                      --菜单2-1
+                      --菜单2-2
+                *@
+            </div>
+    </div>
+</form>

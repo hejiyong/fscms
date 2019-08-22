@@ -1,0 +1,49 @@
+﻿@using FsCms.Entity;
+@model FsCms.Entity.SysDictionary
+@{ Layout = ""; }
+
+<form class="layui-form" action="" id="frm_SysDictionaryAdd">
+    <div class="form-module-content">
+        <div class="layui-form-item">
+            <label class="layui-form-label">上级菜单 </label>
+            <div class="layui-input-block">
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.CreateBy)
+                @Html.HiddenFor(m => m.CreateDt)
+                @Html.HiddenFor(m => m.Status)
+                @Html.DropDownList("ParentID", ViewBag.SysDictionaryList as List<SelectListItem>, "", new Dictionary<string, object> { { "class", "plate_text" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">字典编号</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.DictNo, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">字典名称</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.DictName, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">序号</label>
+            <div class="layui-input-block">
+                @Html.TextBoxFor(m => m.Sort, "", new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入摘要" } })
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">字典描述</label>
+            <div class="layui-input-block">
+                @Html.TextAreaFor(m => m.Description, 3, 3, new Dictionary<string, object> { { "autocomplete", "off" }, { "class", "layui-input  " }, { "lay-verify", "title" }, { "placeholder", "请输入标题" } })
+            </div>
+        </div>
+    </div>
+    @*<div class="form-module-footer">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>*@
+</form>

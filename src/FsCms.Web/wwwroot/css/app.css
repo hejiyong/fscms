@@ -1,0 +1,35 @@
+﻿.list-wall {
+    padding: 10px 10px 5px 10px;
+}
+.demoTable .layui-form-item {
+    margin-bottom: 0px;
+    clear: both;
+}
+.demoTable .layui-input, .demoTable .layui-textarea {
+    display: block;
+    width: 100%;
+    padding-left: 10px;
+    font-size: 13px;
+}
+
+.demoTable .layui-input, .demoTable .layui-select, .demoTable .layui-textarea {
+    height: 30px;
+    line-height: 1.2;
+    border-width: 1px;
+    border-style: solid;
+    background-color: #fff;
+    border-radius: 2px;
+}
+
+.layui-table td, .layui-table th {
+    position: relative;
+    padding: 6px 10px;
+    min-height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+}
+.layui-table-view .layui-table td, .layui-table-view .layui-table th {
+    padding: 3px 0;
+    border-top: none;
+    border-left: none;
+}

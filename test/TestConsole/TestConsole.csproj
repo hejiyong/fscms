@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FsCms.Entity\FsCms.Entity.csproj" />
+    <ProjectReference Include="..\..\src\FsCms.Service\FsCms.Service.csproj" />
+  </ItemGroup>
+
+</Project>

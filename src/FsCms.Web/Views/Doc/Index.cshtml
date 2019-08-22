@@ -1,0 +1,40 @@
+﻿@{
+
+}
+<div class="layui-main site-inline">
+    <div class="site-tree">
+        <ul class="layui-tree">
+            @foreach (var item in (List<TreeData>)ViewBag.DocumentList)
+            {
+                <li><h2>@item.text</h2></li>
+                foreach (var children in item.children)
+                {
+                    if (children.datatype == 1)
+                    {
+                        <li class="site-tree-noicon">
+                            <a href="?id=@(children.id)"><cite>@Html.Raw(("&nbsp").GeneralString((children.intextfield - 1)*2)) @children.text</cite></a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="site-tree-noicon">
+                            <a href="#@(children.id)"><cite>&gt;&nbsp;@children.text</cite></a>
+                        </li>
+                        foreach (var children2 in children.children)
+                        {
+                            <li class="site-tree-noicon">
+                                <a href="?id=@(children2.id)"><cite>&nbsp;&nbsp;&nbsp;&nbsp;@children2.text</cite></a>
+                            </li>
+                        }
+                    }
+                }
+            }
+        </ul>
+    </div>
+    <div class="site-content">
+        @Html.Action("Details", new RouteValueDictionary { { "id", ViewBag.DocID } })
+    </div>
+</div>
+<div class="site-tree-mobile layui-hide">
+    <i class="layui-icon"></i>
+</div>

@@ -1,0 +1,177 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering;
+@using FsCms.Entity;
+@{
+    ViewData["Title"] = ".NETCore最方便的ORM";
+}
+
+<!-- 侧边菜单 -->
+<div class="layui-side layui-side-menu ">
+    <div class="layui-side-scroll">
+        <div class="layui-logo" lay-href="">
+            <span>FsCms管理</span>
+        </div>
+        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+            @{var i = 0;
+                foreach (var item in (List<SysMenuTreeNode>)ViewBag.menuList)
+                {
+                    i++;
+                    <li class="layui-nav-item @(i == 1 ? "layui-nav-itemed" : "")">
+                        <a href="javascript:;" lay-tips="主页" lay-direction="2">
+                            <i class="layui-icon layui-icon-home"></i>
+                            <cite>@item.name</cite>
+                            <span class="layui-nav-more"></span>
+                        </a>
+                        <dl class="layui-nav-child">
+                            @foreach (var citem in item.children)
+                            {
+                                <dd><a href="javascript:void(0);" pageid="menu_@(citem.id)" datajson="{}" path='@(citem.MenuUrl ?? "#")'>@citem.name</a></dd>
+                            }
+                        </dl>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+
+<!-- 页面标签 -->
+<div class="layadmin-pagetabs" id="LAY_app_tabs">
+    <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+    <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+    <div class="layui-icon layadmin-tabs-control layui-icon-down">
+        <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+            <li class="layui-nav-item" lay-unselect>
+                <a href="javascript:;"></a>
+                <dl class="layui-nav-child layui-anim-fadein">
+                    <dd class="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+                    <dd class="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+                    <dd class="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+        <ul class="layui-tab-title" id="fscms_tabsheader">
+            <li tab-id="home_index_01" class="tab_main" datajson="{}" path="/Admin/Home/Index"><i class="layui-icon layui-icon-home"></i></li>
+            @*<li tab-id="home/homepage1.html" datajson="{}" path="/Admin/ArticleType/Index" class="temp_tab layui-this"><span>主页一</span><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></li>
+                <li tab-id="home/homepage1.html" datajson="{}" path="/Admin/ArticleType/Index" class="temp_tab"><span>主页二</span><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></li>*@
+        </ul>
+    </div>
+</div>
+
+<div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 10px;" id="page_content">
+        <div id="page_home_index_01">
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-md8">
+                    <div class="layui-row layui-col-space10">
+                        <div class="layui-col-md12">
+                            <div class="layui-card">
+                                <div class="layui-card-header">日常任务</div>
+                                <div class="layui-card-body">
+                                    <div class="layui-carousel layadmin-carousel layadmin-backlog"  style="width: 100%; height: 120px;">
+                                        <div carousel-item="">
+                                            <ul class="layui-row layui-col-space10 layui-this">
+                                                <li class="layui-col-xs6">
+                                                    <a lay-href="app/content/comment.html" class="layadmin-backlog-body">
+                                                        <h3>意见反馈</h3>
+                                                        <p><cite>1</cite></p>
+                                                    </a>
+                                                </li>
+                                                <li class="layui-col-xs6">
+                                                    <a lay-href="app/forum/list.html" class="layadmin-backlog-body">
+                                                        <h3>待回复</h3>
+                                                        <p><cite>12</cite></p>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md12">
+                            <div class="layui-card">
+                                <div class="layui-card-header">数据概览</div>
+                                <div class="layui-card-body" style="height:365px;">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">版本信息</div>
+                        <div class="layui-card-body layui-text">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="100">
+                                    <col>
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <td>前端框架</td>
+                                        <td>
+                                            layui
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>后端</td>
+                                        <td>
+                                            .Net Core \ MVC \ Razor
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>主要特色</td>
+                                        <td>简单 / 响应式 / 清爽 / 极简 / <b>非</b>前后分离</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-card">
+                        <div class="layui-card-header">系统监测</div>
+                        <div class="layui-card-body layadmin-takerates">
+                            <div class="layui-progress" lay-showpercent="yes">
+                                <h3>CPU使用率</h3>
+                                <div class="layui-progress-bar" lay-percent="67%" style="width: 67%;"><span class="layui-progress-text">67%</span></div>
+                            </div>
+                            <div class="layui-progress" lay-showpercent="yes">
+                                <h3>内存占用率</h3>
+                                <div class="layui-progress-bar layui-bg-red" lay-percent="88%" style="width: 88%;"><span class="layui-progress-text">88%</span></div>
+                            </div>
+                            <div class="layui-progress" lay-showpercent="yes">
+                                <h3>硬盘使用</h3>
+                                <div class="layui-progress-bar" lay-percent="35%" style="width: 35;"><span class="layui-progress-text">35%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    freejs.tabMenu.init();
+    $("#LAY-system-side-menu .layui-nav-item>dl>dd>a").click(function () {
+        var path_item = $(this).attr("path");
+        var path_json = $(this).attr("datajson");
+        var pageid = $(this).attr("pageid");
+        var title = $(this).html();
+        var index = freejs.showLoading({ msg: "数据加载中......" });
+        var options = {
+            url: path_item, paramters: $.parseJSON(path_json), loadIndex: index, elm: "page_content",
+            pageid: pageid,
+            title: title
+        };
+        freejs.loadMenu(options);
+        //如果出现长时间未关闭，定时关闭loading
+        setTimeout(function () {
+            if (index >= 0) freejs.closeLoading(index);
+        }, 5000);
+    });
+
+</script>

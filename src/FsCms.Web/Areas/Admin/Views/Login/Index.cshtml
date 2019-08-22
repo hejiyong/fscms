@@ -1,0 +1,170 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>FsCms</title>
+    <link rel="stylesheet" href="~/css/login.css">
+    <link rel="stylesheet" href="~/lib/layui/css/layui.css">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/layui/layui.js"></script>
+
+</head>
+<body>
+    <div class="kit-login">
+        <div class="kit-login-bg"></div>
+        <div class="kit-login-wapper">
+            <h2 class="kit-login-slogan">欢迎使用 <br> FsCms后台管理系统</h2>
+            <div class="kit-login-form">
+                <h4 class="kit-login-title">FsCms后台管理</h4>
+                <form class="layui-form">
+                    <div class="kit-login-row">
+                        <div class="kit-login-col">
+                            <i class="layui-icon">&#xe612;</i>
+                            <span class="kit-login-input">
+                                <input type="text" id="loginName" name="loginName" lay-verify="required" placeholder="用户" autocomplete="off" />
+                            </span>
+                        </div>
+                        <div class="kit-login-col"></div>
+                    </div>
+                    <div class="kit-login-row">
+                        <div class="kit-login-col">
+                            <i class="layui-icon">&#xe64c;</i>
+                            <span class="kit-login-input">
+                                <input type="password" id="password" name="password" lay-verify="required" placeholder="密码" autocomplete="off" />
+                            </span>
+                        </div>
+                        <div class="kit-login-col"></div>
+                    </div>
+                    <div class="kit-login-row">
+                        <div class="kit-login-col">
+                            <input type="checkbox" name="rememberMe" id="rememberMe" title="记住帐号" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="kit-login-row">
+                        <button class="layui-btn kit-login-btn" type="button" lay-submit="submit" id="login_in" lay-filter="login_in">登录</button>
+                    </div>
+                    <div class="kit-login-row" style="margin-bottom:0;">
+                        <a href="javascript:;" style="color: rgb(153, 153, 153); text-decoration: none; font-size: 13px;" id="forgot">忘记密码</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        var loginName = "";
+        var password = "";
+        $(function () {
+            var LName = getCookie("loginName");
+            var pass = getCookie("password");
+            $("#loginName").val(LName);
+            $("#password").val(pass);
+            if (LName != "" && LName != undefined) {
+                $("#rememberMe").prop("checked", "checked");;
+            }
+
+            $('#forgot').on("click", function () {
+                layer.msg('请联系管理员！', { icon: 2 });
+            })
+        });
+        layui.use(['layer', 'form'], function () {
+            var form = layui.form,
+                $ = layui.jquery;
+
+            var setLoginButtn = function (isdisabled) {
+                if (isdisabled) {
+                    $("#login_in").text("登录中...");
+                    $("#login_in").attr("disabled", "disabled");
+                }
+                else {
+                    $("#login_in").text("登录");
+                    $("#login_in").removeAttr("disabled");
+                }
+            };
+
+            form.on('submit(login_in)', function (data) {
+                loginName = data.field.loginName;
+                password = data.field.password;
+                setLoginButtn(true);
+                $.ajax({
+                    url: "/LoginIn",@*@Url.Action("LoginIn")*@
+                    data: JSON.stringify({ userName: data.field.loginName, password: data.field.password, returnUrl:'' }),
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        setLoginButtn(false);
+                        if (r.status == 2) {
+                            layer.msg(r.errorMessage, { icon: 2 });
+                            return false;
+                        }
+                        else if (r.status == 1) {
+                            SaveCookie();
+                            $("#login_in").text("登录成功，正在跳转中...");
+                            window.setTimeout(function () {
+                                var returnUrl = '@TempData["returnUrl"]';
+                                if (returnUrl == "")
+                                    window.location = "/admin";
+                                else
+                                    window.location = returnUrl;
+                            }, 500);
+                        }
+                    },
+                    //error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    //    setLoginButtn(false);
+                    //    //显示具体的异常信息
+                    //    layer.msg(XMLHttpRequest.statusText, { icon: 3 });
+                    //}
+                });
+                return false;
+            });
+        });
+
+        function SaveCookie() {
+            var ischeck = $("#rememberMe").is(':checked');
+            if (ischeck) {
+                SetCookie("loginName", loginName)
+                SetCookie("password", password)
+            } else
+            {
+                DeleteCookie("loginName");
+                DeleteCookie("password");
+            }
+        };
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i].trim();
+                if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+            }
+            return "";
+        }
+        function SetCookie(cname, cvalue) {
+            var d = new Date();
+            d.setTime(d.getTime() + (7 * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + d.toGMTString();
+            document.cookie = cname + "=" + cvalue + "; " + expires;
+        }
+
+        function DeleteCookie(cname) {
+            var d = new Date();
+            d.setTime(d.getTime()-100);
+            var expires = "expires=" + d.toGMTString();
+            var cval = getCookie(cname);
+            document.cookie = cname + "=" + cval + "; " + expires;
+
+
+        }
+
+
+    </script>
+    <script language="JavaScript">
+        if (window != top)
+            top.location.href = location.href;
+    </script>
+</body>
+</html>

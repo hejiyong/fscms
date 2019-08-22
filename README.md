@@ -38,6 +38,9 @@
 
 ![输入图片说明](./doc/7.png "7.png")
 
+#### 同步操作说明
+![同步操作说明](./doc/fscms同步加载wiki.gif)
+
 
 1. Fork 本仓库
 2. 新建 Feat_xxx 分支

@@ -10,7 +10,7 @@
     right: 0px;
     bottom: 0px;
     background-size: cover;
-    background-image: url("/images/bg1.jpg");
+    /*background-image: url("/images/bg1.jpg");*/
 }
 
 .kit-login-wapper {

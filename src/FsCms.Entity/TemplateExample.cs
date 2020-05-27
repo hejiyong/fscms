@@ -13,7 +13,13 @@ namespace FsCms.Entity
     public class TemplateExample : BaseEntity
     {
         /// <summary>
-        /// 数据类型
+        /// 类型编号
+        /// </summary>
+        [Display(Name = "分类编号")]
+        public long? TypeID { get; set; }
+
+        /// <summary>
+        /// 数据类型（示例或者模板）
         /// </summary>
         [Display(Name = "数据类型")]
         [Column(MapType = typeof(int))]

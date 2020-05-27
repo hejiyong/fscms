@@ -1,23 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSql" Version="0.8.3" />
-    <PackageReference Include="FreeSql.Extensions.LazyLoading" Version="0.8.3" />
-    <PackageReference Include="FreeSql.Provider.MySql" Version="0.8.3" />
-    <PackageReference Include="FreeSql.Provider.Sqlite" Version="0.8.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.ComponentModel.Annotations">
-      <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.2.0\ref\netcoreapp2.2\System.ComponentModel.Annotations.dll</HintPath>
-    </Reference>
+    <PackageReference Include="FreeSql" Version="1.4.0" />
+    <PackageReference Include="FreeSql.Extensions.LazyLoading" Version="1.4.0" />
+    <PackageReference Include="FreeSql.Provider.MySql" Version="1.4.0" />
+    <PackageReference Include="FreeSql.Provider.Sqlite" Version="1.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>

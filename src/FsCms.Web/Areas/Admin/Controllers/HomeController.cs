@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace FsCms.Web.Areas.Admin.Controllers
 {
     [Microsoft.AspNetCore.Authorization.Authorize(Roles = AuthorizeName.Items)]
-    [Area(AreasName.Admin)]
+    //[Area(AreasName.Admin)]
+    [Area("Admin")]
+    //[Route("Admin/[controller]/[action]")]
     public class HomeController : AdminBaseController
     {
         public SysRoleMenuDAL SysRoleMenuDAL { get; set; }

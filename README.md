@@ -20,6 +20,9 @@
 - [ ] 开发模板管理模块；
 - [ ] 开发论坛管理模块；
 - [x] 设计与开发前端站点；
+- [x] 同步解析wiki目录；
+
+#### [码云地址](https://gitee.com/HoganCode/FreeSqlCms)
 
 #### 项目结果
 
@@ -40,7 +43,6 @@
 
 #### 同步操作说明
 ![同步操作说明](./doc/fscms同步加载wiki.gif)
-
 
 1. Fork 本仓库
 2. 新建 Feat_xxx 分支

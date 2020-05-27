@@ -1,31 +1,115 @@
 ﻿@{
 
 }
+
 <div class="layui-main site-inline">
     <div class="site-tree">
         <ul class="layui-tree">
-            
+            @foreach (var item in (List<TreeData>)ViewBag.DocumentList)
+            {
+                <li><h2>@item.text</h2></li>
+                foreach (var children in item.children)
+                {
+                    if (children.datatype == 1)
+                    {
+                        <li class="site-tree-noicon">
+                            <a href="?id=@(children.id)"><cite>@Html.Raw(("&nbsp").GeneralString((children.intextfield - 1) * 2)) @children.text</cite></a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="site-tree-noicon">
+                            <a href="#@(children.id)"><cite>&gt;&nbsp;@children.text</cite></a>
+                        </li>
+                        foreach (var children2 in children.children)
+                        {
+                            <li class="site-tree-noicon">
+                                <a href="?id=@(children2.id)"><cite>&nbsp;&nbsp;&nbsp;&nbsp;@children2.text</cite></a>
+                            </li>
+                        }
+                    }
+                }
+            }
         </ul>
     </div>
     <div class="site-content">
-		<div style="width:80%; height:430px; padding-top:150px; font-size:20px; font-weight:bold; letter-spacing:6px;line-height:20px;">
-			<br />
-			<br />
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <button type="button" class="layui-btn layui-btn-primary">fsql：freesql</button>
+                        <button type="button" class="layui-btn">model：tbtest</button>
+                        <button type="button" class="layui-btn layui-btn-normal">field：xxx,xxx,xxx,xxx</button>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">代码编辑器</div>
+                    <div class="layui-card-body">
+                        <textarea id="demo" style="display: none;"></textarea>
+                    </div>
+                </div>
+            </div>
 
-			<p style="font-size:14px;"><a href="https://github.com/movingsam/FreeSqlWebApiDemo" target="_blank">https://github.com/movingsam/FreeSqlWebApiDemo</a></p>
-			<p>
-				一个基于FreeSql构建的Demo，这个项目风格好高
-			</p>
-
-			<br />
-			<br />
-			<br />
-			<br />
-
-			<p style="color:#aaa;">...更多见 github 开源仓储里 Examples 目录...</p>
-		</div>
-	</div>
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header">卡片面板</div>
+                    <div class="layui-card-body">
+                        卡片式面板面板通常用于非白色背景色的主体内<br>
+                        从而映衬出边框投影
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header">卡片面板</div>
+                    <div class="layui-card-body">
+                        结合 layui 的栅格系统<br>
+                        轻松实现响应式布局
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="site-tree-mobile layui-hide">
     <i class="layui-icon"></i>
 </div>
+
+<script>
+layui.use('layedit', function(){
+  var layedit = layui.layedit;
+  layedit.build('demo'); //建立编辑器
+});
+</script>
+
+
+@*<div class="layui-main site-inline">
+        <div class="site-tree">
+            <ul class="layui-tree">
+
+            </ul>
+        </div>
+        <div class="site-content">
+            <div style="width:80%; height:430px; padding-top:150px; font-size:20px; font-weight:bold; letter-spacing:6px;line-height:20px;">
+                <br />
+                <br />
+
+                <p style="font-size:14px;"><a href="https://github.com/movingsam/FreeSqlWebApiDemo" target="_blank">https://github.com/movingsam/FreeSqlWebApiDemo</a></p>
+                <p>
+                    一个基于FreeSql构建的Demo，这个项目风格好高
+                </p>
+
+                <br />
+                <br />
+                <br />
+                <br />
+
+                <p style="color:#aaa;">...更多见 github 开源仓储里 Examples 目录...</p>
+            </div>
+        </div>
+    </div>
+    <div class="site-tree-mobile layui-hide">
+        <i class="layui-icon"></i>
+    </div>*@

@@ -28,9 +28,8 @@ namespace FsCms.Service.Ioc
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public IServiceProvider Initialize(IServiceCollection services)
+        public IServiceProvider Initialize(ContainerBuilder builder)
         {
-            var builder = new ContainerBuilder();
             builder.RegisterInstance(Instance).As<IIocManager>().SingleInstance();
             //所有程序集 和程序集下类型
             var deps = DependencyContext.Default;
@@ -97,7 +96,7 @@ namespace FsCms.Service.Ioc
                 }
             }
 
-            builder.Populate(services);
+            //builder.Populate(services);
             _container = builder.Build();
             return new AutofacServiceProvider(_container);
         }

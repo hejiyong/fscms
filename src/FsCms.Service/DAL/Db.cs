@@ -36,27 +36,29 @@ namespace FsCms.Service.DAL
                     .UseLazyLoading(true)
                     .Build();
 
-                freesql.Aop.ConfigEntityProperty = (s, e) =>
-                {
-                    //默认设置主键
-                    if (e.Property.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.KeyAttribute), false).Any())
-                    {
-                        e.ModifyResult.IsPrimary = true;
-                    }
+                freesql.Aop.ConfigEntityProperty += Aop_ConfigEntityProperty;
 
-                    //设置maxlength
-                    if (e.Property.PropertyType == typeof(string))
-                    {
-                        var strLen = e.Property.GetCustomAttribute<System.ComponentModel.DataAnnotations.MaxLengthAttribute>();
-                        if (strLen != null)
-                        {
-                            e.ModifyResult.DbType = freesql.CodeFirst.GetDbInfo(e.Property.PropertyType)?.dbtype + "(" + strLen.Length + ")";
-                        }
-                    }
-                };
                 ConnectionPool.Add(dbtype, freesql);
             }
             return ConnectionPool[dbtype];
+        }
+
+        private static void Aop_ConfigEntityProperty(object s, FreeSql.Aop.ConfigEntityPropertyEventArgs e)
+        {
+            //默认设置主键
+            if (e.Property.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.KeyAttribute), false).Any())
+            {
+                e.ModifyResult.IsPrimary = true;
+            }
+            ////设置maxlength
+            //if (e.Property.PropertyType == typeof(string))
+            //{
+            //    var strLen = e.Property.GetCustomAttribute<System.ComponentModel.DataAnnotations.MaxLengthAttribute>();
+            //    if (strLen != null)
+            //    {
+            //        e.ModifyResult.DbType = FreeSql.ICodeFirst.GetDbInfo(e.Property.PropertyType)?.dbtype + "(" + strLen.Length + ")";
+            //    }
+            //}
         }
 
         public static IFreeSql DB(this DataType t)

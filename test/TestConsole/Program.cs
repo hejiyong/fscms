@@ -46,7 +46,7 @@ namespace TestConsole
                 {
                     var row = alllines[i];
                     //判断row的类型  文章还是分类
-                    if (row.indexOf("##") != -1)
+                    if (row.IndexOf("##") != -1)
                     {
                         var typename = row.Replace("##", "").Trim();
                         rows.Add(new
@@ -58,7 +58,7 @@ namespace TestConsole
                             row = row
                         });
                     }
-                    else if (row.indexOf("* ") != -1)
+                    else if (row.IndexOf("* ") != -1)
                     {
                         var trimCount = alllines[i].Length - alllines[i].TrimStart().Length;
                         Regex rg = new Regex(@"(?i)(?<=\[)(.*)(?=\])");
@@ -73,7 +73,7 @@ namespace TestConsole
                         else
                         {
                             url = Regex.Replace(alllines[i], @"(.*\()(.*)(\).*)", "$2");
-                            int startIndex = url.indexOf("/FreeSql/wiki/");
+                            int startIndex = url.IndexOf("/FreeSql/wiki/");
                             if (startIndex != -1)
                                 url = url.Substring(startIndex, url.Length - startIndex).Replace("/FreeSql/wiki/", "/FreeSql.wiki/");
                         }

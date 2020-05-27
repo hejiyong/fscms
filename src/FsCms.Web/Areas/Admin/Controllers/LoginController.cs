@@ -14,7 +14,8 @@ using FsCms.Entity.Enum;
 
 namespace FsCms.Web.Areas.Admin.Controllers
 {
-    [Area(AreasName.Admin)]
+    //[Area(AreasName.Admin)]
+    [Area("Admin")]
     public class LoginController : Controller
     {
         public SysUserDAL SysUserDAL { get; set; }

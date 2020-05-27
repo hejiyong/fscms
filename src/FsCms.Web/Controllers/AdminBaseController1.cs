@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace FsCms.Web
 {
+    [Route("Admin/[controller]/[action]")]
     public class AdminBaseController : Controller, IToolBarActionButtonRight
     {
         public SysRoleMenuDAL base_SysRoleMenuDAL { get; set; }
@@ -195,7 +196,7 @@ namespace FsCms.Web
                     //q =>this.UserID, "/" + controller + "/", RoleIDs);
                     var rolebtn = base_SysRoleButtonDAL.Query((s) => this.Role.Contains(s.RoleId)).list.Select(s => s.ButtonId).ToList();
                     var showbtns = new SysMenuButtonDAL().Query(s =>
-                        s.Menu.MenuUrl.indexOf(area + "/" + controller + "/" + action) != -1 &&
+                        s.Menu.MenuUrl.IndexOf(area + "/" + controller + "/" + action) != -1 &&
                         rolebtn.Contains(s.Id));
 
                     foreach (SysMenuButton item in showbtns.list)

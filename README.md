@@ -3,7 +3,7 @@
 
 #### 软件架构
 
-1. Asp.net core mvc 
+1. Asp.net core mvc （已升级到.net core 3.1)
 2. [FreeSql](https://github.com/2881099/FreeSql)
 3. [Layui](https://www.layui.com/)
 

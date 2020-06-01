@@ -1,5 +1,5 @@
 #### 介绍
-内容管理系统
+内容管理系统，动态同步md文件生成文档。
 
 #### 软件架构
 
@@ -26,7 +26,8 @@
 
 #### 项目结果
 
-![输入图片说明](./doc/1.png "1.png")
+
+![输入图片说明](https://github.com/hejiyong/fscms/blob/master/doc/1.png "1.png")
 
 #### 项目截图
 ![输入图片说明](./doc/2.png "2.png")
